@@ -16,10 +16,6 @@ public class ButtonCollection : MonoBehaviour
     public Button shieldButton;
     public Image fillImage;
 
-    public float duration = 3f;
-    public float moveSpeed = 10f;
-    public float boostAmount = 2f;
-
     void Awake()
     {
         instance = this;

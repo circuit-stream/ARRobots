@@ -83,6 +83,7 @@ public class RobotTouchController : MonoBehaviour
 
     private void OnDestroy()
     {
+        fillImage.fillAmount = 1f;
         GameManager.instance.LostLives();
     }
 
