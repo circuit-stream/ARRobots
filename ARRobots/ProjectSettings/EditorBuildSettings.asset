@@ -9,5 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/ARRobot.unity
     guid: 6a957054b5301b54a8591a59c3e9351f
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: f43908083b98ac0498cadb27c21295db,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 9bac17232f4e54f4d81ff1b2fb2a6a99,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: bfab4c030da394b02a13b8c4dd65c1cf,
       type: 2}
