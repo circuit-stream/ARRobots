@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -14,11 +12,17 @@ public class ButtonCollection : MonoBehaviour
     public Button jumpButton;
     public Button boostButton;
     public Button shieldButton;
-    public Image fillImage;
+    public Image boostCooldownImage;
+    public Image boostActiveImage;
+    public Image shieldCooldownImage;
+    public Image shieldActiveImage;
 
     void Awake()
     {
         instance = this;
-        fillImage.fillAmount = 1f;
+        boostCooldownImage.fillAmount = 1f;
+        shieldCooldownImage.fillAmount = 1f;
+        shieldActiveImage.gameObject.SetActive(false);
+        boostActiveImage.gameObject.SetActive(false);
     }
 }

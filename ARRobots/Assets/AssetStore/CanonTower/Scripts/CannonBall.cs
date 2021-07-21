@@ -1,12 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CannonBall : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.GetComponent<RobotTouchController>() || collision.collider.tag == "Obstacle")
+        var robotController = collision.collider.GetComponent<RobotTouchController>();
+
+        if (robotController)
+        {
+            Destroy(gameObject);
+
+            if (!robotController.IsShieldActive)
+            {
+                Destroy(collision.gameObject);
+            }
+        }
+
+        else if (collision.collider.CompareTag("Obstacle"))
         {
             Destroy(collision.gameObject);
         }

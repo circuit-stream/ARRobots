@@ -16,13 +16,13 @@ public class Cannon : MonoBehaviour
     [SerializeField]
     private Transform spawnPoint;
 
-    
+
     void OnEnable()
     {
-        InvokeRepeating("ShootAtPlayer", 3f, 3f);
+        InvokeRepeating("ShootAtPlayer", 3f, 5f);
     }
 
-    
+
     void Update()
     {
         if (!RobotPlayer())

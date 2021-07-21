@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class RobotTouchController : MonoBehaviour
 {
@@ -21,14 +23,27 @@ public class RobotTouchController : MonoBehaviour
     /// Challenges variables
     /// </summary>
     private Button jumpButton;
-    private Button boostButton;
-    private Button shieldButton;
-    private Image fillImage;
+    private bool isGrounded;
 
-    public float boostAmount = 5f;
-    public float duration = 3f;
+    private Button boostButton;
+    public float boostAmount = 2f;
+    public float boostDuration = 1f;
+    public float boostCooldown = 3f;
+    private Coroutine activeBoostCoroutine;
+    private Image boostCooldownImage;
+    private Image boostActiveImage;
+
+    private Button shieldButton;
+    public float shieldDuration = 1f;
+    public float shieldCooldown = 5f;
+    public GameObject shieldVisual;
+    private Coroutine activeShieldCoroutine;
+    private Image shieldCooldownImage;
+    private Image shieldActiveImage;
+    public bool IsShieldActive => shieldVisual.activeSelf;
+
     public GameObject obstacle;
-    public float maxNumberOfObstacles = 5f;
+    public int maxNumberOfObstacles = 3;
     public float radius = 0.3f;
 
     #endregion
@@ -45,22 +60,27 @@ public class RobotTouchController : MonoBehaviour
         jumpButton = ButtonCollection.instance.jumpButton;
         jumpButton.onClick.AddListener(Jump);
 
+        boostCooldownImage = ButtonCollection.instance.boostCooldownImage;
+        boostActiveImage = ButtonCollection.instance.boostActiveImage;
         boostButton = ButtonCollection.instance.boostButton;
-        fillImage = ButtonCollection.instance.fillImage;
         boostButton.onClick.AddListener(Boost);
 
+        shieldCooldownImage = ButtonCollection.instance.shieldCooldownImage;
+        shieldActiveImage = ButtonCollection.instance.shieldActiveImage;
         shieldButton = ButtonCollection.instance.shieldButton;
         shieldButton.onClick.AddListener(Shield);
+        shieldVisual.SetActive(false);
 
         if(GameManager.instance.robotTouchController == null)
         {
             GameManager.instance.robotTouchController = this;
         }
+
+        StartCoroutine(SpawnObstacles());
         #endregion
     }
 
-
-    void Update()
+    private void Update()
     {
         // movement
         if(joystick.Direction.magnitude >= deadZone)
@@ -83,62 +103,136 @@ public class RobotTouchController : MonoBehaviour
 
     private void OnDestroy()
     {
-        fillImage.fillAmount = 1f;
+        boostCooldownImage.fillAmount = 1f;
         GameManager.instance.LostLives();
     }
 
 
     #region Challenges
 
-    public void Jump()
+    private void Jump()
     {
-        robotRigidbody.AddForce(transform.up * jumpForce);
-
+        if (isGrounded)
+        {
+            robotRigidbody.AddForce(transform.up * jumpForce);
+            isGrounded = false;
+        }
     }
 
-    public void Boost()
+    private void OnCollisionEnter(Collision other)
     {
-        moveSpeed *= boostAmount;
-        StartCoroutine(TimedBoost(duration));
+        if (other.gameObject.CompareTag("Plane"))
+        {
+            isGrounded = true;
+        }
     }
 
-    private IEnumerator TimedBoost(float duration)
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Plane"))
+        {
+            isGrounded = false;
+        }
+    }
+
+    private void Boost()
+    {
+        if (activeBoostCoroutine == null)
+        {
+            activeBoostCoroutine = StartCoroutine(TimedBoost());
+        }
+    }
+
+    private IEnumerator TimedBoost()
     {
         // set the start time to the time at the
         // beginning of the frame
         float startTime = Time.time;
-        float time = duration;
-        float value = 0;
 
-        while(Time.time - startTime < duration)
+        // Activate boost
+        moveSpeed *= boostAmount;
+        boostActiveImage.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(boostDuration);
+
+        // Deactivate boost
+        moveSpeed /= boostAmount;
+        boostActiveImage.gameObject.SetActive(false);
+
+        // Wait cooldown to end
+        float elapsedTime = Time.time - startTime;
+        while(elapsedTime < boostCooldown)
         {
-            time -= Time.deltaTime;
-            value = time / duration;
-            fillImage.fillAmount = value;
+            boostCooldownImage.fillAmount = elapsedTime / boostCooldown;
 
             yield return null;
+
+            elapsedTime = Time.time - startTime;
         }
 
-        moveSpeed /= boostAmount;
+        boostCooldownImage.fillAmount = 1f;
 
-        fillImage.fillAmount = 1f;
         yield return new WaitForEndOfFrame();
+
+        activeBoostCoroutine = null;
     }
 
     private void Shield()
     {
-        SpawnObstacles(transform.position);
+        if (activeShieldCoroutine == null)
+        {
+            activeShieldCoroutine = StartCoroutine(TimedShield());
+        }
     }
 
-    public void SpawnObstacles(Vector3 position)
+    private IEnumerator TimedShield()
     {
-        int randomMax = (int)Random.Range(0, maxNumberOfObstacles + 1);
+        // set the start time to the time at the
+        // beginning of the frame
+        float startTime = Time.time;
 
-        for (int i = 0; i <= randomMax; i++)
+        shieldVisual.SetActive(true);
+        shieldActiveImage.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(shieldDuration);
+
+        shieldVisual.SetActive(false);
+        shieldActiveImage.gameObject.SetActive(false);
+
+        // Wait cooldown to end
+        float elapsedTime = Time.time - startTime;
+        while(elapsedTime < shieldCooldown)
         {
-            Vector3 randomPosition = (Random.insideUnitSphere * radius) + position;
+            shieldCooldownImage.fillAmount = elapsedTime / shieldCooldown;
 
-            Instantiate(obstacle, randomPosition, Random.rotation);
+            yield return null;
+
+            elapsedTime = Time.time - startTime;
+        }
+
+        shieldCooldownImage.fillAmount = 1f;
+
+        yield return new WaitForEndOfFrame();
+
+        activeShieldCoroutine = null;
+    }
+
+    private IEnumerator SpawnObstacles()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(6f, 10f));
+
+            int randomMax = Random.Range(1, maxNumberOfObstacles + 1);
+            Vector3 position = transform.position;
+
+            for (int i = 0; i <= randomMax; i++)
+            {
+                Vector2 randomCircle = Random.insideUnitCircle * radius;
+                Vector3 randomPosition = position + new Vector3(randomCircle.x, 0.5f, randomCircle.y);
+
+                Instantiate(obstacle, randomPosition, Random.rotation);
+            }
         }
     }
 
