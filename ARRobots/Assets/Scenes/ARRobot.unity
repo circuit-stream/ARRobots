@@ -2225,6 +2225,7 @@ GameObject:
   - component: {fileID: 1471915678}
   - component: {fileID: 1471915680}
   - component: {fileID: 1471915679}
+  - component: {fileID: 1471915681}
   m_Layer: 5
   m_Name: BoostCooldownImage
   m_TagString: Untagged
@@ -2289,6 +2290,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471915677}
   m_CullTransparentMesh: 0
+--- !u!114 &1471915681
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471915677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8534e17a0f90604c9afd4f5c73d829f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id: 4fc41446-7cbc-4d69-b29a-bc03d3d7b6cb
 --- !u!1 &1529314756
 GameObject:
   m_ObjectHideFlags: 0
@@ -2742,6 +2756,7 @@ GameObject:
   - component: {fileID: 2037436981}
   - component: {fileID: 2037436980}
   - component: {fileID: 2037436979}
+  - component: {fileID: 2037436982}
   m_Layer: 5
   m_Name: JumpButton
   m_TagString: Untagged
@@ -2851,3 +2866,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2037436977}
   m_CullTransparentMesh: 0
+--- !u!114 &2037436982
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037436977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8534e17a0f90604c9afd4f5c73d829f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id: 61ddde58-965d-40b4-85d4-b8d8dac465f6

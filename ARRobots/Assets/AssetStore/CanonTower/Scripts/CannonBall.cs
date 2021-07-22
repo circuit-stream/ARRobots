@@ -18,6 +18,7 @@ public class CannonBall : MonoBehaviour
 
         else if (collision.collider.CompareTag("Obstacle"))
         {
+            Destroy(gameObject);
             Destroy(collision.gameObject);
         }
     }

@@ -219,6 +219,9 @@ public class RobotTouchController : MonoBehaviour
 
     private IEnumerator SpawnObstacles()
     {
+        // this loop will run forever
+        // but the coroutine itself will be stopped when the robot gameObject is destroyed
+        // or the coroutine is killed manually
         while (true)
         {
             yield return new WaitForSeconds(Random.Range(6f, 10f));
@@ -228,6 +231,7 @@ public class RobotTouchController : MonoBehaviour
 
             for (int i = 0; i <= randomMax; i++)
             {
+                // Using Random.insideUnitCircle instead of Random.insideUnitSphere because we don't want obstacles to spawn below the robot
                 Vector2 randomCircle = Random.insideUnitCircle * radius;
                 Vector3 randomPosition = position + new Vector3(randomCircle.x, 0.5f, randomCircle.y);
 
