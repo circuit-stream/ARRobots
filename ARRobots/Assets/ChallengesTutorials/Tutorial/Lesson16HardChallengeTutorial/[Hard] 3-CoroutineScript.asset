@@ -136,8 +136,8 @@ MonoBehaviour:
       Text:
         m_Untranslated: "Open the \"RobotTouchController\" script at \"Assets/AssetStore/
           RobotSphere/Scripts/ RobotTouchController\" and check how we added the
-          shield logic, starting from line 180.\r\n\r\nNotice that we start the obstacles
-          coroutine at line 68.\r"
+          shield logic, starting from line 180.\r\n\r\nNotice that we had to set
+          some shield variables and add a listener to the boost button at line 68.\r"
       m_Tutorial: {fileID: 0}
       m_Image: {fileID: 0}
       m_Video: {fileID: 0}
