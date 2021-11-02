@@ -32,8 +32,9 @@ public class Cannon : MonoBehaviour
         else
         {
             Vector3 targetDirection = RobotPlayer().transform.position - transform.position;
-            Vector3 direction = Vector3.RotateTowards(transform.forward, targetDirection, Time.deltaTime * turnSpeed, 0.0f);
-            transform.rotation = Quaternion.LookRotation(direction);
+            Quaternion lookRotation = Quaternion.LookRotation(targetDirection);
+            Vector3 rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * turnSpeed).eulerAngles;
+            transform.rotation = Quaternion.Euler(0f,rotation.y, 0f);
         }
 
     }
